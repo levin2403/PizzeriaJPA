@@ -5,6 +5,8 @@
 package Persistencia;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 import javax.persistence.*;
 
 /**
@@ -16,6 +18,7 @@ import javax.persistence.*;
 public class Ingrediente implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Column(name= "id_ingrediente")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,22 +31,30 @@ public class Ingrediente implements Serializable {
     @JoinColumn(name= "id_tipo",nullable = false)
     private TipoIngrediente tipo;
 
+    @ManyToMany(mappedBy="ingredientes")
+    List<Producto> productos;
 
     public Ingrediente() {
     }
 
-    public Ingrediente(int cantidad, String nombre, TipoIngrediente tipo, Long id) {
+    public Ingrediente(int cantidad, String nombre, TipoIngrediente tipo, 
+            List<Producto> productos) {
         this.cantidad = cantidad;
         this.nombre = nombre;
         this.tipo = tipo;
-        this.id = id;
+        this.productos = productos;
     }
 
-    public Ingrediente(int cantidad, String nombre, TipoIngrediente tipo) {
+    public Ingrediente(Long id, int cantidad, String nombre, 
+            TipoIngrediente tipo, List<Producto> productos) {
+        this.id = id;
         this.cantidad = cantidad;
         this.nombre = nombre;
         this.tipo = tipo;
+        this.productos = productos;
     }
+    
+    
 
     public int getCantidad() {
         return cantidad;
@@ -78,6 +89,14 @@ public class Ingrediente implements Serializable {
         this.id = id;
     }
 
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -86,21 +105,37 @@ public class Ingrediente implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Ingrediente)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Ingrediente other = (Ingrediente) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
+        final Ingrediente other = (Ingrediente) obj;
+        if (this.cantidad != other.cantidad) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.tipo, other.tipo)) {
+            return false;
+        }
+        return Objects.equals(this.productos, other.productos);
     }
 
     @Override
     public String toString() {
-        return "Ingrediente{" + "cantidad=" + cantidad + ", nombre=" + nombre + ", tipo=" + tipo + ", id=" + id + '}';
+        return "Ingrediente{" + "id=" + id + ", cantidad=" + cantidad + 
+                ", nombre=" + nombre + ", tipo=" + tipo + ", productos=" + 
+                productos + '}';
     }
     
     

@@ -6,6 +6,7 @@ package Persistencia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -32,24 +33,34 @@ public class Producto implements Serializable {
     @Column(name = "descripcion")
     private String descripcion;
 
+    @ManyToMany()
+    @JoinTable(
+    name = "productos_ingredientes",
+            joinColumns = @JoinColumn (name="id_producto"),
+            inverseJoinColumns = @JoinColumn(name= "id_ingrediente")
+    
+    )
+    
+    private List<Ingrediente> ingredientes;
+    
     public Producto() {
     }
 
-    public Producto(Long id) {
-        this.id = id;
-    }
-
-    public Producto(String nombre, BigDecimal precio, String descripcion) {
+    public Producto(String nombre, BigDecimal precio, String descripcion, 
+            List<Ingrediente> ingredientes) {
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;
+        this.ingredientes = ingredientes;
     }
 
-    public Producto(Long id, String nombre, BigDecimal precio, String descripcion) {
+    public Producto(Long id, String nombre, BigDecimal precio, 
+            String descripcion, List<Ingrediente> ingredientes) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;
+        this.ingredientes = ingredientes;
     }
     
     public Long getId() {

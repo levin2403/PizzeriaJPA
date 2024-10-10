@@ -5,7 +5,8 @@
 package Persistencia;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import javax.persistence.*;
 
 /**
@@ -23,10 +24,10 @@ public class Venta implements Serializable {
     private Long id;
 
     @Column(name = "fecha")
-    private Date fecha;
+    private LocalDate fecha;
     
     @Column(name = "total")     
-    private int total;
+    private BigDecimal total;
     
     @ManyToOne
     @JoinColumn(name = "id_empleado")
@@ -38,6 +39,30 @@ public class Venta implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
     }
 
     @Override

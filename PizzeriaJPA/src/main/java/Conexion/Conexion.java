@@ -18,7 +18,7 @@ public class Conexion {
 
     static {
         try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("pizzeria");
+            entityManagerFactory = Persistence.createEntityManagerFactory("pu-Pizzeria");
         } catch (Exception e) {
             e.printStackTrace();
             throw new ExceptionInInitializerError("Error al crear la EntityManagerFactory");
@@ -26,21 +26,23 @@ public class Conexion {
     }
 
     /**
-     * Metodo para crear la conexion
-     * @return retorna la conexion
+     * Método para crear la conexión.
+     * 
+     * @return Retorna el EntityManager.
      */
-    public EntityManager crearConexion() { 
+    public EntityManager crearConexion() {
         return entityManagerFactory.createEntityManager();
     }
 
-
-    /**
-     * Metodo para cerrar la conexion;
+     /**
+     * Método para cerrar un EntityManager específico.
      * 
+     * @param em El EntityManager a cerrar.
      */
-    public void cerrarConexion() {
-        if (entityManagerFactory != null) {
-            entityManagerFactory.close();
+    public void cerrarConexion(EntityManager em) {
+        if (em != null && em.isOpen()) {
+            em.close();
         }
     }
+    
 }

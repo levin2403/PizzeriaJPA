@@ -17,54 +17,17 @@ public class TipoIngrediente implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Column (name=" id_tipo")
+    @Column(name=" id_tipo")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(name = "descripcion")
     private String descripcion;
 
     @OneToMany(cascade= CascadeType.PERSIST, mappedBy="tipo")
     List<Ingrediente> ingredientes;
     
-    public List<Ingrediente> getIngredientes() {
-        return ingredientes;
-    }
 
-    public void setIngredientes(List<Ingrediente> ingredientes) {
-        this.ingredientes = ingredientes;
-    }
-    
-    
-    
-
-    public Long getId() {
-        return id;
-    }
-
-    public TipoIngrediente(String descripcion, Long id) {
-        this.descripcion = descripcion;
-        this.id = id;
-    }
-
-    public TipoIngrediente(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public TipoIngrediente() {
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-    
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Override
     public int hashCode() {
