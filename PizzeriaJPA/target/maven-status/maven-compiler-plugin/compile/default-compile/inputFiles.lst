@@ -1,14 +1,11 @@
-C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Conexion\Conexion.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Persistencia\Ingrediente.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\IngredienteDAO.java
+C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\VentaDAO.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Pruebas\Pruebas.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\EmpleadoDAO.java
+C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\TipoIngredienteDAO.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Persistencia\TipoIngrediente.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Persistencia\Venta.java
-C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\ProductoDAO.java
-C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Persistencia\Producto_Venta.java
-C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\VentaDAO.java
-C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\TipoIngredienteDAO.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Persistencia\Empleado.java
-C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\Producto_VentaDAO.java
+C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\DAO\ProductoDAO.java
 C:\Users\skevi\Documents\GitHub\PizzeriaJPA\PizzeriaJPA\src\main\java\Persistencia\Producto.java

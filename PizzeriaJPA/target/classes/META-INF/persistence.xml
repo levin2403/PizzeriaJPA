@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence               http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="pu-Pizzeria" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>com.mycompany.pizzeriajpa.Ingrediente</class>
-    <class>com.mycompany.pizzeriajpa.TipoIngrediente</class>
-    <class>com.mycompany.pizzeriajpa.Producto</class>
-    <class>com.mycompany.pizzeriajpa.Venta</class>
-    <class>com.mycompany.pizzeriajpa.Empleado</class>
-    <class>com.mycompany.pizzeriajpa.Producto_Venta</class>
+    <class>persistencia.Producto</class>
+    <class>persistencia.Ingrediente</class>
+    <class>persistencia.TipoIngrediente</class>
+    <class>persistencia.Venta</class>
+    <class>persistencia.Empleado</class>
     <properties>
-      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/pizzeria"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="Saymyname15"/>
-      <property name="eclipselink.logging.level" value="FINE"/>
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="javax.persistence.schema-generation.database.action" value="none"/>
     </properties>
   </persistence-unit>
 </persistence>
