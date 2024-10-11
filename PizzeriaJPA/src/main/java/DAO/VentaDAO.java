@@ -4,77 +4,83 @@
  */
 package DAO;
 
-import Conexion.Conexion;
-import Persistencia.Venta;
-import java.time.LocalDate;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
 
 /**
  *
- * @author skevi
+ * @author caarl
  */
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import persistencia.Venta;
+
 public class VentaDAO {
-    
-    private final Conexion conexion;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public VentaDAO() {
-        this.conexion = new Conexion();
+        emf = Persistence.createEntityManagerFactory("pu-Pizzeria");
+        em = emf.createEntityManager();
     }
-   
-/**
-     * Agrega una nueva venta.
-     * 
-     * @param venta Venta a agregar.
-     */
+
     public void agregar(Venta venta) {
-        EntityManager em = conexion.crearConexion();
-        EntityTransaction transaction = em.getTransaction();
-
         try {
-            transaction.begin(); // Inicia la transacción
-            em.persist(venta); // Persiste la venta en la base de datos
-            transaction.commit(); // Confirma la transacción
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback(); // Reversa la transacción en caso de error
+            em.getTransaction().begin();
+            em.persist(venta);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void actualizar(Venta venta) {
+        try {
+            em.getTransaction().begin();
+            em.merge(venta);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void eliminar(Long id) {
+        try {
+            Venta venta = em.find(Venta.class, id);
+            if (venta != null) {
+                em.getTransaction().begin();
+                em.remove(venta);
+                em.getTransaction().commit();
             }
-            e.printStackTrace();
-        } finally {
-            em.close(); // Cierra el EntityManager
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
         }
     }
 
-    /**
-     * Busca las ventas realizadas desde agosto del 2024 hasta septiembre de 2024.
-     * 
-     * @return Lista de ventas.
-     */
-    public List<Venta> buscarPorFecha() {
-        EntityManager em = conexion.crearConexion();
-        List<Venta> ventas = null;
-
-        try {
-            // Define el rango de fechas
-            LocalDate fechaInicio = LocalDate.of(2024, 8, 1);
-            LocalDate fechaFin = LocalDate.of(2024, 9, 30);
-
-            // Consulta JPQL para buscar ventas en el rango de fechas
-            String jpql = "SELECT v FROM Venta v WHERE v.fecha BETWEEN :inicio AND :fin";
-            TypedQuery<Venta> query = em.createQuery(jpql, Venta.class);
-            query.setParameter("inicio", fechaInicio);
-            query.setParameter("fin", fechaFin);
-
-            ventas = query.getResultList(); // Ejecuta la consulta y obtiene la lista de ventas
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close(); // Cierra el EntityManager
-        }
-
-        return ventas; // Retorna la lista de ventas
+    public Venta buscarPorId(Long id) {
+        return em.find(Venta.class, id);
     }
-    
+
+    public List<Venta> buscarTodos() {
+        TypedQuery<Venta> query = em.createQuery("SELECT v FROM Venta v", Venta.class);
+        return query.getResultList();
+    }
+
+    public List<Venta> buscarVentasAgostoSeptiembre2024() {
+        return em.createQuery(
+            "SELECT v FROM Venta v WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin", 
+            Venta.class)
+            .setParameter("fechaInicio", java.sql.Date.valueOf("2024-08-01"))
+            .setParameter("fechaFin", java.sql.Date.valueOf("2024-09-30"))
+            .getResultList();
+    }
+
+    public void cerrar() {
+        em.close();
+        emf.close();
+    }
 }

@@ -2,57 +2,99 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Persistencia;
+package persistencia;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.*;
-/**
- *
- * @author skevi
- */
-@Entity
-@Table(name="tipos")
-public class TipoIngrediente implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+
+
+@Entity
+@Table(name = "tipos")
+public class TipoIngrediente implements Serializable {
     @Id
-    @Column(name=" id_tipo")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Integer id;
     
     @Column(name = "descripcion")
     private String descripcion;
-
-    @OneToMany(cascade= CascadeType.PERSIST, mappedBy="tipo")
-    List<Ingrediente> ingredientes;
     
+    @OneToMany(mappedBy = "tipo")
+    private List<Ingrediente> ingredientes = new ArrayList<>();
 
+    public TipoIngrediente() {
+    }
+
+    public TipoIngrediente(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public TipoIngrediente(Integer id, String descripcion) {
+        this.id = id;
+        this.descripcion = descripcion;
+    }
+    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public List<Ingrediente> getIngredientes() {
+        return ingredientes;
+    }
+
+    public void setIngredientes(List<Ingrediente> ingredientes) {
+        this.ingredientes = ingredientes;
+    }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.id);
+        hash = 71 * hash + Objects.hashCode(this.descripcion);
+        hash = 71 * hash + Objects.hashCode(this.ingredientes);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TipoIngrediente)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        TipoIngrediente other = (TipoIngrediente) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
+        final TipoIngrediente other = (TipoIngrediente) obj;
+        if (!Objects.equals(this.descripcion, other.descripcion)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return Objects.equals(this.ingredientes, other.ingredientes);
     }
 
     @Override
     public String toString() {
-        return "TipoIngrediente{" + "descripcion=" + descripcion + ", id=" + id + '}';
+        return "TipoIngrediente{" + "id=" + id + ", descripcion=" + descripcion + 
+               ", ingredientes=" + ingredientes + '}';
     }
-    
 }
-

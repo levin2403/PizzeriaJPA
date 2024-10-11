@@ -4,69 +4,78 @@
  */
 package DAO;
 
-import Conexion.Conexion;
-import Persistencia.Ingrediente;
+
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import persistencia.Ingrediente;
 
-/**
- *
- * @author skevi
- */
+
 public class IngredienteDAO {
-    
-    private final Conexion conexion;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public IngredienteDAO() {
-        this.conexion = new Conexion();
+        emf = Persistence.createEntityManagerFactory("pu-Pizzeria");
+        em = emf.createEntityManager();
     }
-    
-/**
-     * Añade un ingrediente.
-     * 
-     * @param ingrediente Ingrediente a agregar.
-     */
+
     public void agregar(Ingrediente ingrediente) {
-        EntityManager em = conexion.crearConexion();
-        EntityTransaction transaction = em.getTransaction();
-
         try {
-            transaction.begin(); // Inicia la transacción
-            em.persist(ingrediente); // Persiste el ingrediente en la base de datos
-            transaction.commit(); // Confirma la transacción
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback(); // Reversa la transacción en caso de error
+            em.getTransaction().begin();
+            em.persist(ingrediente);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void actualizar(Ingrediente ingrediente) {
+        try {
+            em.getTransaction().begin();
+            em.merge(ingrediente);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void eliminar(Long id) {
+        try {
+            Ingrediente ingrediente = em.find(Ingrediente.class, id);
+            if (ingrediente != null) {
+                em.getTransaction().begin();
+                em.remove(ingrediente);
+                em.getTransaction().commit();
             }
-            e.printStackTrace();
-        } finally {
-            em.close(); // Cierra el EntityManager
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
         }
     }
 
-    /**
-     * Busca ingredientes cuyo nombre comience o termine por la letra "A".
-     * 
-     * @return Lista de ingredientes.
-     */
-    public List<Ingrediente> buscar() {
-        EntityManager em = conexion.crearConexion();
-        List<Ingrediente> ingredientes = null;
-
-        try {
-            // Consulta JPQL para buscar ingredientes cuyo nombre comience o termine con "A"
-            String jpql = "SELECT i FROM Ingrediente i WHERE i.nombre LIKE 'A%' OR i.nombre LIKE '%A'";
-            TypedQuery<Ingrediente> query = em.createQuery(jpql, Ingrediente.class);
-            ingredientes = query.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            em.close(); // Cierra el EntityManager
-        }
-
-        return ingredientes;
+    public Ingrediente buscarPorId(Long id) {
+        return em.find(Ingrediente.class, id);
     }
-    
+
+    public List<Ingrediente> buscarTodos() {
+        TypedQuery<Ingrediente> query = em.createQuery("SELECT i FROM Ingrediente i", Ingrediente.class);
+        return query.getResultList();
+    }
+
+    public List<Ingrediente> buscarIngredientesConA() {
+        TypedQuery<Ingrediente> query = em.createQuery(
+            "SELECT i FROM Ingrediente i WHERE LOWER(i.nombre) LIKE 'a%' OR LOWER(i.nombre) LIKE '%a'", 
+            Ingrediente.class);
+        return query.getResultList();
+    }
+
+    public void cerrar() {
+        em.close();
+        emf.close();
+    }
 }

@@ -4,71 +4,79 @@
  */
 package DAO;
 
-import Conexion.Conexion;
-import Persistencia.Producto;
-import java.math.BigDecimal;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-
 /**
  *
- * @author skevi
+ * @author caarl
  */
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import persistencia.Producto;
+
+
 public class ProductoDAO {
-    
-    private final Conexion conexion;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public ProductoDAO() {
-        this.conexion = new Conexion();
+        emf = Persistence.createEntityManagerFactory("pu-Pizzeria");
+        em = emf.createEntityManager();
     }
-    
-    /**
-     * Agrega un producto.
-     * 
-     * @param producto producto a agregar.
-     */
-    public void agregarProducto(Producto producto) {
-        EntityManager em = conexion.crearConexion();
-        EntityTransaction transaction = em.getTransaction();
-        
+
+    public void agregar(Producto producto) {
         try {
-            transaction.begin(); // Inicia la transacción
-            em.persist(producto); // Guarda el producto en la base de datos
-            transaction.commit(); // Confirma la transacción
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback(); // Reversa la transacción en caso de error
+            em.getTransaction().begin();
+            em.persist(producto);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void actualizar(Producto producto) {
+        try {
+            em.getTransaction().begin();
+            em.merge(producto);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void eliminar(Long id) {
+        try {
+            Producto producto = em.find(Producto.class, id);
+            if (producto != null) {
+                em.getTransaction().begin();
+                em.remove(producto);
+                em.getTransaction().commit();
             }
-            e.printStackTrace();
-        } finally {
-            conexion.cerrarConexion(em); // Cierra el EntityManager
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
         }
     }
 
-    /**
-     * Busca productos cuyo precio sea mayor al del precio dado en el parámetro.
-     * 
-     * @param precio precio mínimo.
-     * @return lista de productos cuyo precio es mayor que el especificado.
-     */
-    public List<Producto> buscarPorPrecio(BigDecimal precio) {
-        EntityManager em = conexion.crearConexion();
-        List<Producto> productos = null;
+    public Producto buscarPorId(Long id) {
+        return em.find(Producto.class, id);
+    }
 
-        try {
-            String jpql = "SELECT p FROM Producto p WHERE p.precio > :precio";
-            TypedQuery<Producto> query = em.createQuery(jpql, Producto.class);
-            query.setParameter("precio", precio);
-            productos = query.getResultList(); // Ejecuta la consulta y obtiene la lista de productos
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            conexion.cerrarConexion(em); // Cierra el EntityManager
-        }
-
-        return productos; // Retorna la lista de productos
+    public List<Producto> buscarTodos() {
+        TypedQuery<Producto> query = em.createQuery("SELECT p FROM producto p", Producto.class);
+        return query.getResultList();
     }
     
+    public List<Producto> buscarPrecioMayorA250() {
+    return em.createQuery("SELECT p FROM Producto p WHERE p.precio > 250", Producto.class)
+             .getResultList();
+}
+
+    public void cerrar() {
+        em.close();
+        emf.close();
+    }
 }

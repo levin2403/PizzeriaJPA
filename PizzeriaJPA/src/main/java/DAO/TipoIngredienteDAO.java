@@ -4,19 +4,37 @@
  */
 package DAO;
 
-import Conexion.Conexion;
 
-/**
- *
- * @author skevi
- */
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import persistencia.TipoIngrediente;
+
+
 public class TipoIngredienteDAO {
-    
-    private final Conexion conexion;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public TipoIngredienteDAO() {
-        this.conexion = new Conexion();
+        emf = Persistence.createEntityManagerFactory("pu-Pizzeria");
+        em = emf.createEntityManager();
     }
     
+    public void agregar(TipoIngrediente tipo) {
+        try {
+            em.getTransaction().begin();
+            em.persist(tipo);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw ex;
+        }
+    }
     
+    public void cerrar() {
+        if (em != null) em.close();
+        if (emf != null) emf.close();
+    }
 }

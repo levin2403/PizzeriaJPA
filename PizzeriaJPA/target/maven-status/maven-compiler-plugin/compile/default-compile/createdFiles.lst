@@ -1,2 +1,14 @@
+DAO\EmpleadoDAO.class
+Persistencia\Ingrediente.class
+Persistencia\Producto_Venta.class
+DAO\IngredienteDAO.class
+DAO\TipoIngredienteDAO.class
+Conexion\Conexion.class
+Pruebas\Pruebas.class
+Persistencia\Venta.class
+DAO\ProductoDAO.class
+Persistencia\TipoIngrediente.class
+Persistencia\Empleado.class
 Persistencia\Producto.class
-com\mycompany\pizzeriajpa\PizzeriaJPA.class
+DAO\VentaDAO.class
+DAO\Producto_VentaDAO.class

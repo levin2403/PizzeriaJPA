@@ -2,72 +2,62 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Persistencia;
+package persistencia;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.*;
 
-/**
- *
- * @author skevi
- */
+
+
 @Entity
 @Table(name = "productos")
 public class Producto implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    
     @Id
-    @Column(name = "id_producto")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(name = "id")
+    private Integer id;
+    
     @Column(name = "nombre")
     private String nombre;
     
     @Column(name = "precio")
-    private BigDecimal precio;
+    private Double precio;
     
     @Column(name = "descripcion")
     private String descripcion;
-
-    @ManyToMany()
+    
+    @ManyToMany
     @JoinTable(
-    name = "productos_ingredientes",
-            joinColumns = @JoinColumn (name="id_producto"),
-            inverseJoinColumns = @JoinColumn(name= "id_ingrediente")
-    
+        name = "productos_ingredientes",
+        joinColumns = @JoinColumn(name = "id_producto"),
+        inverseJoinColumns = @JoinColumn(name = "id_ingrediente")
     )
-    
-    private List<Ingrediente> ingredientes;
-    
+    private List<Ingrediente> ingredientes = new ArrayList<>();
+
     public Producto() {
     }
 
-    public Producto(String nombre, BigDecimal precio, String descripcion, 
-            List<Ingrediente> ingredientes) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.descripcion = descripcion;
-        this.ingredientes = ingredientes;
-    }
-
-    public Producto(Long id, String nombre, BigDecimal precio, 
-            String descripcion, List<Ingrediente> ingredientes) {
+    public Producto(Integer id, String nombre, Double precio, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;
-        this.ingredientes = ingredientes;
+    }
+
+    public Producto(String nombre, Double precio, String descripcion) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.descripcion = descripcion;
     }
     
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -79,11 +69,11 @@ public class Producto implements Serializable {
         this.nombre = nombre;
     }
 
-    public BigDecimal getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(BigDecimal precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 
@@ -94,32 +84,56 @@ public class Producto implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    
+
+    public List<Ingrediente> getIngredientes() {
+        return ingredientes;
+    }
+
+    public void setIngredientes(List<Ingrediente> ingredientes) {
+        this.ingredientes = ingredientes;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.nombre);
+        hash = 37 * hash + Objects.hashCode(this.precio);
+        hash = 37 * hash + Objects.hashCode(this.descripcion);
+        hash = 37 * hash + Objects.hashCode(this.ingredientes);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields 
-        // are not set
-        if (!(object instanceof Producto)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Producto other = (Producto) object;
-        if ((this.id == null && other.id != null) || (this.id != null && 
-                !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
+        final Producto other = (Producto) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.descripcion, other.descripcion)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.precio, other.precio)) {
+            return false;
+        }
+        return Objects.equals(this.ingredientes, other.ingredientes);
     }
 
     @Override
     public String toString() {
-        return "Persistencia.pu[ id=" + id + " ]";
+        return "Producto{" + "id=" + id + ", nombre=" + nombre + ", precio=" + precio + 
+               ", descripcion=" + descripcion + ", ingredientes=" + ingredientes + '}';
     }
-    
 }

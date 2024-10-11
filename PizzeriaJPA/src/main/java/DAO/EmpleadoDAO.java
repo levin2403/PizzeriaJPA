@@ -4,45 +4,76 @@
  */
 package DAO;
 
-import Conexion.Conexion;
-import Persistencia.Empleado;
+import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import persistencia.Empleado;
 
-/**
- *
- * @author skevi
- */
+
 public class EmpleadoDAO {
-    
-    private final Conexion conexion;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
     public EmpleadoDAO() {
-        this.conexion = new Conexion();
+        emf = Persistence.createEntityManagerFactory("pu-Pizzeria");
+        em = emf.createEntityManager();
     }
-    
-    
-    /**
-     * Agrega un empleado.
-     * 
-     * @param empleado empleado a agregar.
-     */
-    public void agregarEmpleado(Empleado empleado) {
-        EntityManager em = conexion.crearConexion();
-        EntityTransaction transaction = em.getTransaction();
 
+    public void agregar(Empleado empleado) {
         try {
-            transaction.begin(); // Inicia la transacción
-            em.persist(empleado); // Guarda el empleado en la base de datos
-            transaction.commit(); // Confirma la transacción
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback(); // Reversa la transacción en caso de error
-            }
-            e.printStackTrace();
-        } finally {
-            conexion.cerrarConexion(em); // Cierra el EntityManager
+            em.getTransaction().begin();
+            em.persist(empleado);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
         }
     }
-    
+
+    public void actualizar(Empleado empleado) {
+        try {
+            em.getTransaction().begin();
+            em.merge(empleado);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public void eliminar(Long id) {
+        try {
+            Empleado empleado = em.find(Empleado.class, id);
+            if (empleado != null) {
+                em.getTransaction().begin();
+                em.remove(empleado);
+                em.getTransaction().commit();
+            }
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public Empleado buscarPorId(Long id) {
+        return em.find(Empleado.class, id);
+    }
+
+    public List<Empleado> buscarTodos() {
+        TypedQuery<Empleado> query = em.createQuery("SELECT e FROM Empleado e", Empleado.class);
+        return query.getResultList();
+    }
+
+    public List<Empleado> buscarEmpleadosPorNombre(String nombre) {
+        return em.createQuery("SELECT e FROM Empleado e WHERE e.nombre = :nombre", Empleado.class)
+            .setParameter("nombre", nombre)
+            .getResultList();
+    }
+
+    public void cerrar() {
+        em.close();
+        emf.close();
+    }
 }
